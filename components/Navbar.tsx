@@ -3,10 +3,19 @@ import { BadgePlus, LogOut } from "lucide-react";
 import Image from "next/image"
 import Link from "next/link"
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
+import { AUTHOR_BY_GITHUB_EMAIL_QUERY } from "@/sanity/lib/queries";
+import { client } from "@/sanity/lib/client";
+import { notFound } from "next/navigation";
 
 const Navbar = async () => {
 
     const session = await auth();
+
+    if (!session) return;
+
+    const { email } = session.user;
+    const user = await client.fetch(AUTHOR_BY_GITHUB_EMAIL_QUERY, { email });
+    if (!user) notFound();
 
     return (
         <header className="px-5 py-3 bg-white shadow-sm font-work-sans">
@@ -34,7 +43,7 @@ const Navbar = async () => {
                                 </button>
                             </form>
 
-                            <Link href={`/user/${session?.id}`}>
+                            <Link href={`/user/${user._id}`}>
                                 <Avatar className="size-10">
                                     <AvatarImage src={session?.user?.image || ""} alt={session?.user?.name || ""} />
                                     <AvatarFallback>AV</AvatarFallback>
