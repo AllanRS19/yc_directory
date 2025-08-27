@@ -5,17 +5,13 @@ import Link from "next/link"
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { AUTHOR_BY_GITHUB_EMAIL_QUERY } from "@/sanity/lib/queries";
 import { client } from "@/sanity/lib/client";
-import { notFound } from "next/navigation";
 
 const Navbar = async () => {
 
     const session = await auth();
 
-    if (!session) return;
-
     const { email } = session.user;
     const user = await client.fetch(AUTHOR_BY_GITHUB_EMAIL_QUERY, { email });
-    if (!user) notFound();
 
     return (
         <header className="px-5 py-3 bg-white shadow-sm font-work-sans">
