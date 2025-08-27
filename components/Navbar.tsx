@@ -9,8 +9,13 @@ import { client } from "@/sanity/lib/client";
 const Navbar = async () => {
 
     const session = await auth();
+    let email = "";
 
-    const { email } = session.user;
+    if (session) {
+        email = session.user.email;
+    } else {
+        email = "";
+    }
     const user = await client.fetch(AUTHOR_BY_GITHUB_EMAIL_QUERY, { email });
 
     return (
